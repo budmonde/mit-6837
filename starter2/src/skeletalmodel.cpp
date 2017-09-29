@@ -123,7 +123,7 @@ void SkeletalModel::drawJoints(const Camera& camera) {
         stack.pop_back();
 
         // Pop joint's transform
-        Matrix4f M = joint->transform * m_matrixStack.top();
+        Matrix4f M = m_matrixStack.top() * joint->transform;
         m_matrixStack.pop();
 
         // Draw sphere at joint position
@@ -153,7 +153,7 @@ void SkeletalModel::drawSkeleton(const Camera& camera) {
         stack.pop_back();
 
         // Pop joint's transform
-        Matrix4f M = joint->transform * m_matrixStack.top();
+        Matrix4f M = m_matrixStack.top() * joint->transform;
         m_matrixStack.pop();
 
         for (size_t i=0; i < joint->children.size(); i++) {
@@ -162,7 +162,8 @@ void SkeletalModel::drawSkeleton(const Camera& camera) {
                 Vector3f N = Vector3f::cross(Vector3f::UP, Y);
                 float theta = acos(Vector3f::dot(Vector3f::UP, Y.normalized()));
                 Matrix4f R = Matrix4f::rotation(N, theta);
-                // Draw sphere at joint position
+
+                // Draw cylinder at joint position
                 camera.SetUniforms(program, M*R);
                 drawCylinder(6, 0.02f, Y.abs());
             }
@@ -176,6 +177,9 @@ void SkeletalModel::drawSkeleton(const Camera& camera) {
 
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ) {
     // Set the rotation part of the joint's transformation matrix based on the passed in Euler angles.
+    Joint * joint = m_joints[jointIndex];
+    Matrix4f M = Matrix4f::rotateX(rX) * Matrix4f::rotateY(rY) * Matrix4f::rotateZ(rZ);
+    joint->transform = joint->transform * M.inverse();
 }
 
 void SkeletalModel::computeBindWorldToJointTransforms() {
