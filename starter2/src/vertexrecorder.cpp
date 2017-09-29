@@ -8,13 +8,11 @@
 #define M_PIf 3.141592f
 #endif
 
-VertexRecorder::VertexRecorder() :m_nverts(0)
-{
+VertexRecorder::VertexRecorder() :m_nverts(0) {
 }
 
 void VertexRecorder::record(Vector3f pos,
-    Vector3f normal)
-{
+    Vector3f normal) {
     record(pos, normal, Vector3f(1, 1, 1));
 }
 void VertexRecorder::record_poscolor(Vector3f pos,
@@ -34,8 +32,7 @@ void VertexRecorder::record(Vector3f pos,
    A more efficient implementation would only upload when the vertex
    data changed.
 */
-void VertexRecorder::draw(GLenum mode)
-{
+void VertexRecorder::draw(GLenum mode) {
     if (m_nverts == 0) {
         return;
     }
@@ -94,8 +91,7 @@ void VertexRecorder::draw(GLenum mode)
     glDeleteBuffers(3, vertexbuffer);
     glDeleteVertexArrays(1, &vertexarray);
 }
-void VertexRecorder::clear()
-{
+void VertexRecorder::clear() {
     m_nverts = 0;
     m_position.clear();
     m_normal.clear();

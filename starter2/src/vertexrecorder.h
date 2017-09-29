@@ -5,7 +5,7 @@
 #include <vecmath.h>
 #include "gl.h"
 
-class VertexRecorder{ 
+class VertexRecorder { 
 public:
     VertexRecorder();
     // write a vertex into the CPU buffer

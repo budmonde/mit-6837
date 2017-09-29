@@ -17,8 +17,7 @@
 #include "matrixstack.h"
 #include "camera.h"
 
-class SkeletalModel
-{
+class SkeletalModel {
 public:
     SkeletalModel();
     ~SkeletalModel();

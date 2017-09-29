@@ -9,14 +9,12 @@
 
 // This is eugene going a little nuts with C++
 template <typename TYPE, unsigned SIZE>
-class tuple
-{
+class tuple {
 public:
     
     tuple() { }
 
-    tuple(TYPE first, ...)
-    {
+    tuple(TYPE first, ...) {
         data[ 0 ] = first;
 
         va_list args;
@@ -63,8 +61,7 @@ private:
 };
 
 template <typename TYPE, unsigned SIZE>
-std::ostream& operator<<(std::ostream &out, const tuple<TYPE,SIZE> x)
-{
+std::ostream& operator<<(std::ostream &out, const tuple<TYPE,SIZE> x) {
     out << '[';
     for (unsigned i=0; i<SIZE; i++)
         out << ' ' << x[i];

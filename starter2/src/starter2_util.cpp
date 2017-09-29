@@ -71,8 +71,7 @@ static void GLAPIENTRY gl_dbg_callback(GLenum source,
 	GLenum severity,
 	GLsizei length,
 	const GLchar* message,
-	const void* userParam)
-{
+	const void* userParam) {
 	if (severity > GL_DEBUG_SEVERITY_NOTIFICATION) {
 		// below some spammy ids that you might want to filter 
 		//id != 131204 && id != 131076 && id != 131184 && 
@@ -86,8 +85,7 @@ static void GLAPIENTRY gl_dbg_callback(GLenum source,
 	}
 }
 
-void setupDebugPrint()
-{
+void setupDebugPrint() {
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
 		GL_DONT_CARE, 0, nullptr, GL_TRUE);
 	glDebugMessageCallback(gl_dbg_callback, nullptr);
@@ -95,8 +93,7 @@ void setupDebugPrint()
 }
 #endif
 
-static bool compileShader(GLuint handle, GLenum stype, const char* src)
-{
+static bool compileShader(GLuint handle, GLenum stype, const char* src) {
 	int shader_len = (int)strlen(src);
 	glShaderSource(handle, 1, &src, &shader_len);
 	glCompileShader(handle);
@@ -116,16 +113,14 @@ static bool compileShader(GLuint handle, GLenum stype, const char* src)
 }
 
 // caller must free returned shader object
-static int compileShader(GLenum type, const char* src)
-{
+static int compileShader(GLenum type, const char* src) {
 	GLuint handle = glCreateShader(type);
 	compileShader(handle, type, src);
 	return handle;
 }
 
 
-static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader)
-{
+static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader) {
 	glAttachShader(handle, vshader);
 	glAttachShader(handle, fshader);
 	glLinkProgram(handle);
@@ -141,8 +136,7 @@ static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader)
 	return true;
 }
 
-uint32_t compileProgram(const char* vshader_src, const char* fshader_src)
-{
+uint32_t compileProgram(const char* vshader_src, const char* fshader_src) {
 	GLuint program = glCreateProgram();
 	GLuint vshader = compileShader(GL_VERTEX_SHADER, vshader_src);
 	GLuint fshader = compileShader(GL_FRAGMENT_SHADER, fshader_src);
@@ -157,8 +151,7 @@ uint32_t compileProgram(const char* vshader_src, const char* fshader_src)
 	return program;
 }
 
-void printOpenGLVersion()
-{
+void printOpenGLVersion() {
 	int major;
 	int minor;
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
@@ -166,13 +159,11 @@ void printOpenGLVersion()
 	printf("Running OpenGL %d.%d\n", major, minor);
 }
 
-float deg2rad(float deg)
-{
+float deg2rad(float deg) {
 	return deg / 180.0f * 3.141592f;
 }
 
-float rad2deg(float rad)
-{
+float rad2deg(float rad) {
 	return rad / 3.141592f * 180.0f;
 }
 

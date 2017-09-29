@@ -24,8 +24,7 @@ SkeletalModel::~SkeletalModel() {
     glDeleteProgram(program);
 }
 
-void SkeletalModel::load(const char *skeletonFile, const char *meshFile, const char *attachmentsFile)
-{
+void SkeletalModel::load(const char *skeletonFile, const char *meshFile, const char *attachmentsFile) {
     loadSkeleton(skeletonFile);
 
     m_mesh.load(meshFile);
@@ -35,8 +34,7 @@ void SkeletalModel::load(const char *skeletonFile, const char *meshFile, const c
     updateCurrentJointToWorldTransforms();
 }
 
-void SkeletalModel::draw(const Camera& camera, bool skeletonVisible)
-{
+void SkeletalModel::draw(const Camera& camera, bool skeletonVisible) {
     // draw() gets called whenever a redraw is required
     // (after an update() occurs, when the camera moves, the window is resized, etc)
 
@@ -44,13 +42,10 @@ void SkeletalModel::draw(const Camera& camera, bool skeletonVisible)
 
     glUseProgram(program);
     updateShadingUniforms();
-    if (skeletonVisible)
-    {
+    if (skeletonVisible) {
         drawJoints(camera);
         drawSkeleton(camera);
-    }
-    else
-    {
+    } else {
         // Tell the mesh to draw itself.
         // Since we transform mesh vertices on the CPU,
         // There is no need to set a Model matrix as uniform
@@ -82,13 +77,11 @@ void SkeletalModel::updateShadingUniforms() {
     glUniform4fv(loc, 1, lightDiff);
 }
 
-void SkeletalModel::loadSkeleton(const char* filename)
-{
+void SkeletalModel::loadSkeleton(const char* filename) {
     // Load the skeleton from file here.
 }
 
-void SkeletalModel::drawJoints(const Camera& camera)
-{
+void SkeletalModel::drawJoints(const Camera& camera) {
     // Draw a sphere at each joint. You will need to add a recursive
     // helper function to traverse the joint hierarchy.
     //
@@ -112,8 +105,7 @@ void SkeletalModel::drawJoints(const Camera& camera)
     // didn't push to stack, so no pop() needed
 }
 
-void SkeletalModel::drawSkeleton(const Camera& camera)
-{
+void SkeletalModel::drawSkeleton(const Camera& camera) {
     // Draw cylinders between the joints. You will need to add a recursive 
     // helper function to traverse the joint hierarchy.
     //
@@ -128,13 +120,11 @@ void SkeletalModel::drawSkeleton(const Camera& camera)
     // m_matrixStack.pop();
 }
 
-void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ)
-{
+void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ) {
     // Set the rotation part of the joint's transformation matrix based on the passed in Euler angles.
 }
 
-void SkeletalModel::computeBindWorldToJointTransforms()
-{
+void SkeletalModel::computeBindWorldToJointTransforms() {
     // 2.3.1. Implement this method to compute a per-joint transform from
     // world-space to joint space in the BIND POSE.
     //
@@ -146,8 +136,7 @@ void SkeletalModel::computeBindWorldToJointTransforms()
 
 }
 
-void SkeletalModel::updateCurrentJointToWorldTransforms()
-{
+void SkeletalModel::updateCurrentJointToWorldTransforms() {
     // 2.3.2. Implement this method to compute a per-joint transform from
     // joint space to world space in the CURRENT POSE.
     //
@@ -159,8 +148,7 @@ void SkeletalModel::updateCurrentJointToWorldTransforms()
 
 }
 
-void SkeletalModel::updateMesh()
-{
+void SkeletalModel::updateMesh() {
     // 2.3.2. This is the core of SSD.
     // Implement this method to update the vertices of the mesh
     // given the current state of the skeleton.
