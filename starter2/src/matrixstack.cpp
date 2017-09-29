@@ -14,7 +14,7 @@ void MatrixStack::clear() {
 Matrix4f MatrixStack::top() {
     // Return the top of the stack
     // return Matrix4f();
-    return *m_matrices.end();
+    return m_matrices.back();
 }
 
 void MatrixStack::push( const Matrix4f& m ) {
@@ -27,4 +27,8 @@ void MatrixStack::push( const Matrix4f& m ) {
 void MatrixStack::pop() {
     // Remove the top element from the stack
     m_matrices.pop_back();
+}
+
+int MatrixStack::size() {
+    return m_matrices.size();
 }

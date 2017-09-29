@@ -11,6 +11,7 @@ public:
     Matrix4f top();
     void push( const Matrix4f& m );
     void pop();
+    int size();
 
 private:
     std::vector< Matrix4f > m_matrices;
