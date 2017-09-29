@@ -5,25 +5,21 @@ using namespace std;
 
 const float c_pi = 3.14159265358979323846f;
 
-Camera::Camera()
-{
+Camera::Camera() {
     mStartRot = Matrix4f::identity();
     mCurrentRot = Matrix4f::identity();
 }
 
-void Camera::SetDimensions(int w, int h)
-{
+void Camera::SetDimensions(int w, int h) {
     mDimensions[0] = w;
     mDimensions[1] = h;
 }
 
-void Camera::SetPerspective(float fovy)
-{
+void Camera::SetPerspective(float fovy) {
     mPerspective[0] = fovy;
 }
 
-void Camera::SetViewport(int x, int y, int w, int h)
-{
+void Camera::SetViewport(int x, int y, int w, int h) {
     mViewport[0] = x;
     mViewport[1] = y;
     mViewport[2] = w;
@@ -31,29 +27,24 @@ void Camera::SetViewport(int x, int y, int w, int h)
     mPerspective[1] = float( w ) / h;
 }
 
-void Camera::SetCenter(const Vector3f& center)
-{
+void Camera::SetCenter(const Vector3f& center) {
     mStartCenter = mCurrentCenter = center;
 }
 
-void Camera::SetRotation(const Matrix4f& rotation)
-{
+void Camera::SetRotation(const Matrix4f& rotation) {
     mStartRot = mCurrentRot = rotation;
 }
 
-void Camera::SetDistance(const float distance)
-{
+void Camera::SetDistance(const float distance) {
     mStartDistance = mCurrentDistance = distance;
 }
 
-void Camera::MouseClick(Button button, int x, int y)
-{
+void Camera::MouseClick(Button button, int x, int y) {
     mStartClick[0] = x;
     mStartClick[1] = y;
 
     mButtonState = button;
-    switch (button)
-    {
+    switch (button) {
     case LEFT:
         mCurrentRot = mStartRot;
         break;
@@ -68,10 +59,8 @@ void Camera::MouseClick(Button button, int x, int y)
     }
 }
 
-void Camera::MouseDrag(int x, int y)
-{
-    switch (mButtonState)
-    {
+void Camera::MouseDrag(int x, int y) {
+    switch (mButtonState) {
     case LEFT:
         ArcBallRotation(x,y);
         break;
@@ -87,8 +76,7 @@ void Camera::MouseDrag(int x, int y)
 }
 
 
-void Camera::MouseRelease(int x, int y)
-{
+void Camera::MouseRelease(int x, int y) {
     mStartRot = mCurrentRot;
     mStartCenter = mCurrentCenter;
     mStartDistance = mCurrentDistance;
@@ -97,8 +85,7 @@ void Camera::MouseRelease(int x, int y)
 }
 
 
-void Camera::ArcBallRotation(int x, int y)
-{
+void Camera::ArcBallRotation(int x, int y) {
     float sx, sy, sz, ex, ey, ez;
     float scale;
     float sl, el;
@@ -153,8 +140,7 @@ void Camera::ArcBallRotation(int x, int y)
     // compute axis from cross product.
     dotprod = sx * ex + sy * ey + sz * ez;
 
-    if( dotprod != 1 )
-    {
+    if( dotprod != 1 ) {
         Vector3f axis( sy * ez - ey * sz, sz * ex - ez * sx, sx * ey - ex * sy );
         axis.normalize();
         
@@ -162,17 +148,14 @@ void Camera::ArcBallRotation(int x, int y)
 
         mCurrentRot = Matrix4f::rotation( axis, angle );
         mCurrentRot = mCurrentRot * mStartRot;
-    }
-    else
-    {
+    } else {
         mCurrentRot = mStartRot;
     }
 
 
 }
 
-void Camera::PlaneTranslation(int x, int y)
-{
+void Camera::PlaneTranslation(int x, int y) {
     // map window x,y into viewport x,y
 
     // start
@@ -206,25 +189,21 @@ void Camera::PlaneTranslation(int x, int y)
 
 }
 
-void Camera::ApplyViewport() const
-{
+void Camera::ApplyViewport() const {
     glViewport(mViewport[0],mViewport[1],mViewport[2],mViewport[3]);
 }
 
-Matrix4f Camera::GetPerspective() const
-{
+Matrix4f Camera::GetPerspective() const {
 	return Matrix4f::perspectiveProjection(mPerspective[0]*c_pi / 180.0f, mPerspective[1], 0.1f, 100.0f);
 }
 
 
-Matrix4f Camera::GetViewMatrix() const
-{
+Matrix4f Camera::GetViewMatrix() const {
     Matrix4f C = Matrix4f::translation(-mCurrentCenter) * mCurrentRot.inverse() * Matrix4f::translation(0, 0, mCurrentDistance);
     return C.inverse();
 }
 
-void Camera::SetUniforms(uint32_t program, Matrix4f M) const
-{
+void Camera::SetUniforms(uint32_t program, Matrix4f M) const {
     Matrix4f V = GetViewMatrix();
     Matrix4f C = V.inverse();
     Vector3f eye = C.getCol(3).xyz();
@@ -245,8 +224,7 @@ void Camera::SetUniforms(uint32_t program, Matrix4f M) const
 	glUniformMatrix4fv(loc, 1, false, N);
 }
 
-void Camera::DistanceZoom(int x, int y)
-{
+void Camera::DistanceZoom(int x, int y) {
     int sy = mStartClick[1] - mViewport[1];
     int cy = y - mViewport[1];
 

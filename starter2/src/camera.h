@@ -9,8 +9,7 @@
 #include <vecmath.h>
 #include <cstdint>
 
-class Camera
-{
+class Camera {
 public:
 
     Camera();
@@ -33,7 +32,7 @@ public:
     // Apply viewport, perspective, and modeling
     // use these instead of 
     void ApplyViewport() const;
-	void SetUniforms(uint32_t program, Matrix4f M = Matrix4f::identity()) const;
+    void SetUniforms(uint32_t program, Matrix4f M = Matrix4f::identity()) const;
 
     Matrix4f GetPerspective() const;
     Matrix4f GetViewMatrix() const;

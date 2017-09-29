@@ -20,8 +20,7 @@ using namespace std;
 // Note: using namespace nanogui not possible due to naming conflicts
 namespace ng = ::nanogui;
 
-namespace
-{
+namespace {
 // Constants 
 const int NJOINTS = 18;
 const string jointNames[NJOINTS] = { "Root", "Chest", "Waist", "Neck",
@@ -50,8 +49,7 @@ bool gDrawAxisAlways = false;
 void drawAxis(void);
 
 static void keyCallback(GLFWwindow* window, int key,
-    int scancode, int action, int mods)
-{
+    int scancode, int action, int mods) {
     if (action == GLFW_RELEASE) { // only handle PRESS and REPEAT
         return;
     }
@@ -62,8 +60,7 @@ static void keyCallback(GLFWwindow* window, int key,
     case GLFW_KEY_ESCAPE: // Escape key
         exit(0);
         break;
-    case ' ':
-    {
+    case ' ': {
         Matrix4f eye = Matrix4f::identity();
         camera.SetRotation(eye);
         camera.SetDistance(1.5);
@@ -93,32 +90,27 @@ static void mouseCallback(GLFWwindow* window, int button, int action, int mods) 
     if (lstate == GLFW_PRESS) {
         gMousePressed = true;
         camera.MouseClick(Camera::LEFT, x, y);
-    }
-    else if (rstate == GLFW_PRESS) {
+    } else if (rstate == GLFW_PRESS) {
         gMousePressed = true;
         camera.MouseClick(Camera::RIGHT, x, y);
-    }
-    else if (mstate == GLFW_PRESS) {
+    } else if (mstate == GLFW_PRESS) {
         gMousePressed = true;
         camera.MouseClick(Camera::MIDDLE, x, y);
-    }
-    else {
+    } else {
         gMousePressed = true;
         camera.MouseRelease(x, y);
         gMousePressed = false;
     }
 }
 
-static void motionCallback(GLFWwindow* window, double x, double y)
-{
+static void motionCallback(GLFWwindow* window, double x, double y) {
     if (!gMousePressed) {
         return;
     }
     camera.MouseDrag((int)x, (int)y);
 }
 
-void setViewport(GLFWwindow* window)
-{
+void setViewport(GLFWwindow* window) {
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
 
@@ -127,8 +119,7 @@ void setViewport(GLFWwindow* window)
     camera.ApplyViewport();
 }
 
-void drawAxis()
-{
+void drawAxis() {
     glUseProgram(program_color);
     Matrix4f M = Matrix4f::translation(camera.GetCenter()).inverse();
     camera.SetUniforms(program_color, M);
@@ -162,8 +153,7 @@ void drawAxis()
     recorder.draw(GL_LINES);
 }
 
-void initRendering()
-{
+void initRendering() {
     // Clear to black
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
@@ -171,8 +161,7 @@ void initRendering()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void updateMesh()
-{
+void updateMesh() {
     // Update the bone to world transforms for SSD.
     skeleton->updateCurrentJointToWorldTransforms();
     // update the mesh given the new skeleton
@@ -369,10 +358,8 @@ void freeSkeleton() {
 }
 
 
-int main(int argc, char** argv)
-{
-    if (argc < 2)
-    {
+int main(int argc, char** argv) {
+    if (argc < 2) {
         cout << "Usage: " << argv[0] << " PREFIX" << endl;
         cout << "For example, if you're trying to load data/Model1.skel, data/Model1.obj, and data/Model1.attach, run with: " << argv[0] << " data/Model1" << endl;
         return -1;
