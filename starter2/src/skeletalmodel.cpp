@@ -79,6 +79,28 @@ void SkeletalModel::updateShadingUniforms() {
 
 void SkeletalModel::loadSkeleton(const char* filename) {
     // Load the skeleton from file here.
+    ifstream in(filename);
+
+    if (!in) {
+        cerr << filename << " not found\a" << endl;
+        exit(0);
+    }
+
+    float jPos[3];
+    int jParent;
+    while (in >> jPos[0] >> jPos[1] >> jPos[2] >> jParent) {
+        // Define the new joint
+        Joint * j = new Joint;
+        j->transform = Matrix4f::translation(jPos[0], jPos[1], jPos[2]);
+        // Bind the joint to its parent
+        if (jParent == -1)
+            m_rootJoint = j;
+        else
+            m_joints[jParent]->children.push_back(j);
+        // Add joint to list of joints
+        m_joints.push_back(j);
+    }
+
 }
 
 void SkeletalModel::drawJoints(const Camera& camera) {
@@ -92,17 +114,28 @@ void SkeletalModel::drawJoints(const Camera& camera) {
     // should push it's changes onto the stack, and
     // use stack.pop() to revert the stack to the original
     // state.
+    vector<Joint*> stack;
+    stack.push_back(m_rootJoint);
+    m_matrixStack.clear();
+    while (stack.size()) {
+        // Pop new joint
+        Joint * joint = stack.back();
+        stack.pop_back();
 
-    // this is just for illustration:
+        // Pop joint's transform
+        Matrix4f M = joint->transform * m_matrixStack.top();
+        m_matrixStack.pop();
 
-    // translate from top of stack, but doesn't push, since that's not
-    // implemented yet.
-    Matrix4f M = m_matrixStack.top() * Matrix4f::translation(+0.5f, +0.5f, -0.5f);
-    // update transformation uniforms
-    camera.SetUniforms(program, M);
-    // draw
-    drawSphere(0.025f, 12, 12);
-    // didn't push to stack, so no pop() needed
+        // Draw sphere at joint position
+        camera.SetUniforms(program, M);
+        drawSphere(0.025f, 12, 12);
+
+        // Add child vertices to stack
+        for (size_t i=0; i < joint->children.size(); i++) {
+            stack.push_back(joint->children[i]);
+            m_matrixStack.push(M);
+        }
+    }
 }
 
 void SkeletalModel::drawSkeleton(const Camera& camera) {
@@ -111,13 +144,34 @@ void SkeletalModel::drawSkeleton(const Camera& camera) {
     //
     // We recommend using drawCylinder(6, 0.02f, <height>);
     // to draw a cylinder of reasonable diameter.
+    vector<Joint*> stack;
+    stack.push_back(m_rootJoint);
+    m_matrixStack.clear();
+    while (stack.size()) {
+        // Pop new joint
+        Joint * joint = stack.back();
+        stack.pop_back();
 
-    // you can use the stack with push/pop like this
-    // m_matrixStack.push(Matrix4f::translation(+0.6f, +0.5f, -0.5f))
-    // camera.SetUniforms(program, m_matrixStack.top());
-    // drawCylinder(6, 0.02f, 0.2f);
-    // callChildFunction();
-    // m_matrixStack.pop();
+        // Pop joint's transform
+        Matrix4f M = joint->transform * m_matrixStack.top();
+        m_matrixStack.pop();
+
+        for (size_t i=0; i < joint->children.size(); i++) {
+            Vector3f Y = joint->children[i]->transform.getCol(3).xyz();
+            if (Y != Vector3f::ZERO){
+                Vector3f N = Vector3f::cross(Vector3f::UP, Y);
+                float theta = acos(Vector3f::dot(Vector3f::UP, Y.normalized()));
+                Matrix4f R = Matrix4f::rotation(N, theta);
+                // Draw sphere at joint position
+                camera.SetUniforms(program, M*R);
+                drawCylinder(6, 0.02f, Y.abs());
+            }
+
+            // Add child vertex to stack
+            stack.push_back(joint->children[i]);
+            m_matrixStack.push(M);
+        }
+    }
 }
 
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ) {
