@@ -178,8 +178,8 @@ void SkeletalModel::drawSkeleton(const Camera& camera) {
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ) {
     // Set the rotation part of the joint's transformation matrix based on the passed in Euler angles.
     Joint * joint = m_joints[jointIndex];
-    Matrix4f M = Matrix4f::rotateX(rX) * Matrix4f::rotateY(rY) * Matrix4f::rotateZ(rZ);
-    joint->transform = joint->transform * M.inverse();
+    Matrix3f M = Matrix3f::rotateX(rX) * Matrix3f::rotateY(rY) * Matrix3f::rotateZ(rZ);
+    joint->transform.setSubmatrix3x3(0,0,M);
 }
 
 void SkeletalModel::computeBindWorldToJointTransforms() {
@@ -191,6 +191,24 @@ void SkeletalModel::computeBindWorldToJointTransforms() {
     //
     // This method should update each joint's bindWorldToJointTransform.
     // You will need to add a recursive helper function to traverse the joint hierarchy.
+    vector<Joint*> stack;
+    stack.push_back(m_rootJoint);
+    m_matrixStack.clear();
+    while (stack.size()) {
+        // Pop new joint
+        Joint * joint = stack.back();
+        stack.pop_back();
+
+        // Pop joint's transform
+        joint->bindWorldToJointTransform = joint->transform.inverse() * m_matrixStack.top();
+        m_matrixStack.pop();
+
+        // Add child vertices to stack
+        for (size_t i=0; i < joint->children.size(); i++) {
+            stack.push_back(joint->children[i]);
+            m_matrixStack.push(joint->bindWorldToJointTransform);
+        }
+    }
 
 }
 
@@ -203,6 +221,24 @@ void SkeletalModel::updateCurrentJointToWorldTransforms() {
     //
     // This method should update each joint's currentJointToWorldTransform.
     // You will need to add a recursive helper function to traverse the joint hierarchy.
+    vector<Joint*> stack;
+    stack.push_back(m_rootJoint);
+    m_matrixStack.clear();
+    while (stack.size()) {
+        // Pop new joint
+        Joint * joint = stack.back();
+        stack.pop_back();
+
+        // Pop joint's transform
+        joint->currentJointToWorldTransform = m_matrixStack.top() * joint->transform;
+        m_matrixStack.pop();
+
+        // Add child vertices to stack
+        for (size_t i=0; i < joint->children.size(); i++) {
+            stack.push_back(joint->children[i]);
+            m_matrixStack.push(joint->currentJointToWorldTransform);
+        }
+    }
 
 }
 
@@ -212,5 +248,15 @@ void SkeletalModel::updateMesh() {
     // given the current state of the skeleton.
     // You will need both the bind pose world --> joint transforms.
     // and the current joint --> world transforms.
+    for (size_t i=0; i < m_mesh.currentVertices.size(); i++) {
+        vector<float> weights = m_mesh.attachments[i];
+        Vector4f bind(m_mesh.bindVertices[i], 1.f);
+        Vector4f current(0.f);
+        for (size_t j=0; j < weights.size(); j++) {
+            Joint * joint = m_joints[j];
+            current = current + weights[j] * joint->currentJointToWorldTransform * joint->bindWorldToJointTransform * bind;
+        }
+        m_mesh.currentVertices[i] = current.xyz();
+    }
 }
 
