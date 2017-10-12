@@ -10,8 +10,7 @@
 float rand_uniform(float low, float hi);
 
 struct GLProgram;
-class ParticleSystem
-{
+class ParticleSystem {
 public:
     virtual ~ParticleSystem() {}
 

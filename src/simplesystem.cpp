@@ -3,19 +3,17 @@
 #include "camera.h"
 #include "vertexrecorder.h"
 
+using namespace std;
 
-SimpleSystem::SimpleSystem()
-{
-    // TODO 3.2 initialize the simple system
+SimpleSystem::SimpleSystem() {
+    Vector3f state(1.f, 0.f, 0.f);
+    m_vVecState.push_back(state);
 }
 
-std::vector<Vector3f> SimpleSystem::evalF(std::vector<Vector3f> state)
-{
-    std::vector<Vector3f> f;
-
-    // TODO 3.2: implement evalF
-    // for a given state, evaluate f(X,t)
-
+vector<Vector3f> SimpleSystem::evalF(vector<Vector3f> state) {
+    vector<Vector3f> f;
+    Vector3f dstate(-state[0].y(), state[0].x(), 0.f);
+    f.push_back(dstate);
     return f;
 }
 
@@ -36,7 +34,7 @@ void SimpleSystem::draw(GLProgram& gl)
 
     const Vector3f PARTICLE_COLOR(0.4f, 0.7f, 1.0f);
     gl.updateMaterial(PARTICLE_COLOR);
-    Vector3f pos(1, 0, 0); //YOUR PARTICLE POSITION
+    Vector3f pos = getState()[0];
     gl.updateModelMatrix(Matrix4f::translation(pos));
     drawSphere(0.075f, 10, 10);
 }

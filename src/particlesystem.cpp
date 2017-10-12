@@ -15,12 +15,10 @@ float rand_uniform(float low, float hi) {
 }
 
 GLProgram::GLProgram(uint32_t apl, uint32_t apc, Camera* ac)
-    : program_light(apl), program_color(apc), camera(ac) 
-{
+    : program_light(apl), program_color(apc), camera(ac) {
     enableLighting();
 }
-void GLProgram::updateModelMatrix(Matrix4f M) const
-{
+void GLProgram::updateModelMatrix(Matrix4f M) const {
     camera->SetUniforms(active_program, M);
 }
 void GLProgram::enableLighting() {
