@@ -70,12 +70,20 @@ Vector3f Renderer::traceRay(const Ray &r,
     Hit &h) const {
     // The starter code only implements basic drawing of sphere primitives.
     // You will implement phong shading, recursive ray tracing, and shadow rays.
-
-    // TODO: IMPLEMENT 
+    Vector3f out(0.f, 0.f, 0.f);
     if (_scene.getGroup()->intersect(r, tmin, h)) {
-        return h.getMaterial()->getDiffuseColor();
-    } else {
-        return Vector3f(0, 0, 0);
-    };
+        Vector3f p = r.pointAtParameter(h.getT());
+        int numLights = _scene.getNumLights();
+        for (int i=0; i < numLights; ++i) {
+            Light * l = _scene.getLight(i);
+            Vector3f tolight,
+                     intensity;
+            float distToLight;
+            l->getIllumination(p, tolight, intensity, distToLight);
+            out += h.getMaterial()->shade(r,h,tolight,intensity);
+        }
+        out += _scene.getAmbientLight() * h.getMaterial()->getDiffuseColor();
+    }
+    return out;
 }
 

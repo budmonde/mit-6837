@@ -10,6 +10,8 @@
 
 #include <string>
 
+using namespace std;
+
 class Material {
 public:
     Material(const Vector3f &diffuseColor, 

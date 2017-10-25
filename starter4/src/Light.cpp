@@ -17,7 +17,9 @@ void PointLight::getIllumination(const Vector3f &p,
                              Vector3f &tolight, 
                              Vector3f &intensity, 
                              float &distToLight) const {
-    // TODO Implement point light source
     // tolight, intensity, distToLight are outputs
+    tolight = _position - p;
+    intensity = _color / (tolight.absSquared() * _falloff);
+    distToLight = tolight.abs();
 }
 
