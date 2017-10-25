@@ -7,9 +7,8 @@
 
 #include <limits>
 
-class Light
-{
-  public:
+class Light {
+public:
     virtual ~Light() { }
 
     // in:  p           is the point to be shaded
@@ -22,9 +21,8 @@ class Light
                                  float &distToLight) const = 0;
 };
 
-class DirectionalLight : public Light
-{
-  public:
+class DirectionalLight : public Light {
+public:
     DirectionalLight(const Vector3f &d, const Vector3f &c) :
         _direction(d.normalized()),
         _color(c)
@@ -40,9 +38,8 @@ class DirectionalLight : public Light
     Vector3f _color;
 };
 
-class PointLight : public Light
-{
-  public:
+class PointLight : public Light {
+public:
     PointLight(const Vector3f &p, const Vector3f &c, float falloff) :
         _position(p),
         _color(c),
@@ -54,7 +51,7 @@ class PointLight : public Light
         Vector3f &intensity,
         float &distToLight) const override;
 
-  private:
+private:
     Vector3f _position;
     Vector3f _color;
     float _falloff;

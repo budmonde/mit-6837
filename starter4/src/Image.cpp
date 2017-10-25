@@ -8,10 +8,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-static
-uint8_t
-clampColorComponent(float c)
-{
+static uint8_t clampColorComponent(float c) {
     int tmp = int(c * 255);
 
     if (tmp < 0) {
@@ -25,9 +22,7 @@ clampColorComponent(float c)
     return uint8_t(tmp);
 }
 
-void
-Image::savePNG(const std::string &filename) const
-{
+void Image::savePNG(const std::string &filename) const {
     assert(!filename.empty());
 
     std::vector<uint8_t> buffer;
@@ -46,9 +41,7 @@ Image::savePNG(const std::string &filename) const
     stbi_write_png(filename.c_str(), _width, _height, 3, &buffer[0], _width * 3);
 }
 
-Image 
-Image::loadPNG(const std::string &filename) 
-{
+Image Image::loadPNG(const std::string &filename) {
     assert(!filename.empty());
 
     int w, h, n;
@@ -72,9 +65,7 @@ Image::loadPNG(const std::string &filename)
     return image;
 }
 
-Image
-Image::compare(const Image& img1, const Image & img2) 
-{
+Image Image::compare(const Image& img1, const Image & img2) {
     assert(img1.getWidth() == img2.getWidth());
     assert(img1.getHeight() == img2.getHeight());
 

@@ -32,10 +32,7 @@ public:
 private:
     Image _images[6];
 
-    template<typename T>
-    static T
-        clamp(const T &v, const T &lower_range, const T &upper_range)
-    {
+    template<typename T> static T clamp(const T &v, const T &lower_range, const T &upper_range) {
         if (v < lower_range) {
             return lower_range;
         }

@@ -4,8 +4,7 @@
 #include <string>
 #include <iostream>
 
-CubeMap::CubeMap(const std::string &directory)
-{
+CubeMap::CubeMap(const std::string &directory) {
     std::string side[6] = { "left", "right", "up", "down", "front", "back" };
     for(int ii = 0 ;ii<6;ii++){
         std::string filename = directory + "/" + side[ii] + ".png";
@@ -15,9 +14,7 @@ CubeMap::CubeMap(const std::string &directory)
 }
 
 
-Vector3f
-CubeMap::getFaceTexel(float x, float y, int face) const
-{
+Vector3f CubeMap::getFaceTexel(float x, float y, int face) const {
     x = x * _images[face].getWidth();
     y = (1 - y) * _images[face].getHeight();
     int ix = (int) x;
@@ -43,9 +40,7 @@ CubeMap::getFaceTexel(float x, float y, int face) const
 }
 
 
-Vector3f
-CubeMap::getTexel(const Vector3f &direction) const
-{
+Vector3f CubeMap::getTexel(const Vector3f &direction) const {
     Vector3f dir = direction.normalized();
     Vector3f outputColor(0.0f, 0.0f, 0.0f);
     if ((std::abs(dir[0]) >= std::abs(dir[1])) && (std::abs(dir[0]) >= std::abs(dir[2]))) {

@@ -10,13 +10,12 @@ class Hit;
 class Vector3f;
 class Ray;
 
-class Renderer
-{
-  public:
+class Renderer {
+public:
     // Instantiates a renderer for the given scene.
     Renderer(const ArgParser &args);
     void Render();
-  private:
+private:
     Vector3f traceRay(const Ray &ray, float tmin, int bounces, 
                       Hit &hit) const;
 

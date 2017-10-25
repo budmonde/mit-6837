@@ -1,7 +1,6 @@
 #include "Object3D.h"
 
-bool Sphere::intersect(const Ray &r, float tmin, Hit &h) const
-{
+bool Sphere::intersect(const Ray &r, float tmin, Hit &h) const {
     // BEGIN STARTER
 
     // We provide sphere intersection code for you.
@@ -63,8 +62,7 @@ int Group::getGroupSize() const {
     return (int)m_members.size();
 }
 
-bool Group::intersect(const Ray &r, float tmin, Hit &h) const
-{
+bool Group::intersect(const Ray &r, float tmin, Hit &h) const {
     // BEGIN STARTER
     // we implemented this for you
     bool hit = false;
@@ -81,13 +79,11 @@ bool Group::intersect(const Ray &r, float tmin, Hit &h) const
 Plane::Plane(const Vector3f &normal, float d, Material *m) : Object3D(m) {
     // TODO implement Plane constructor
 }
-bool Plane::intersect(const Ray &r, float tmin, Hit &h) const
-{
+bool Plane::intersect(const Ray &r, float tmin, Hit &h) const {
     // TODO implement
     return false;
 }
-bool Triangle::intersect(const Ray &r, float tmin, Hit &h) const 
-{
+bool Triangle::intersect(const Ray &r, float tmin, Hit &h) const {
     // TODO implement
     return false;
 }
@@ -97,8 +93,7 @@ Transform::Transform(const Matrix4f &m,
     Object3D *obj) : _object(obj) {
     // TODO implement Transform constructor
 }
-bool Transform::intersect(const Ray &r, float tmin, Hit &h) const
-{
+bool Transform::intersect(const Ray &r, float tmin, Hit &h) const {
     // TODO implement
     return false;
 }

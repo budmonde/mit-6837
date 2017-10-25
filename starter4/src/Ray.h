@@ -10,13 +10,11 @@
 // This file defines the Ray and Hit classes
 
 // Ray class mostly copied from Peter Shirley and Keith Morley
-class Ray
-{
+class Ray {
   public:
     Ray(const Vector3f &orig, const Vector3f &dir) :
         _origin(orig),
-        _direction(dir)
-    {
+        _direction(dir) {
     }
 
     const Vector3f getOrigin() const {
@@ -38,47 +36,39 @@ class Ray
 };
 
 inline std::ostream &
-operator<<(std::ostream &os, const Ray &r)
-{
+operator<<(std::ostream &os, const Ray &r) {
     os << "Ray <" << r.getOrigin() << ", " << r.getDirection() << ">";
     return os;
 }
 
 class Material;
-class Hit
-{
+class Hit {
 public:
     // Constructors
     Hit() :
         material(NULL),
-        t(std::numeric_limits<float>::max())
-    {
+        t(std::numeric_limits<float>::max()) {
     }
 
     Hit(float argt, Material *argmaterial, const Vector3f &argnormal) :
         t(argt),
         material(argmaterial),
-        normal(argnormal)
-    {
+        normal(argnormal) {
     }
 
-    float getT() const
-    {
+    float getT() const {
         return t;
     }
 
-    Material * getMaterial() const
-    {
+    Material * getMaterial() const {
         return material;
     }
 
-    const Vector3f getNormal() const
-    {
+    const Vector3f getNormal() const {
         return normal;
     }
 
-    void set(float t, Material *material, const Vector3f &normal)
-    {
+    void set(float t, Material *material, const Vector3f &normal) {
         this->t = t;
         this->material = material;
         this->normal = normal;
@@ -90,8 +80,7 @@ public:
 };
 
 inline std::ostream &
-operator<<(std::ostream &os, const Hit &h)
-{
+operator<<(std::ostream &os, const Hit &h) {
     os << "Hit <" << h.getT() << ", " << h.getNormal() << ">";
     return os;
 }

@@ -11,13 +11,10 @@
 
 Renderer::Renderer(const ArgParser &args) :
     _args(args),
-    _scene(args.input_file)
-{
+    _scene(args.input_file) {
 }
 
-void
-Renderer::Render()
-{
+void Renderer::Render() {
     int w = _args.width;
     int h = _args.height;
 
@@ -67,12 +64,10 @@ Renderer::Render()
 
 
 
-Vector3f
-Renderer::traceRay(const Ray &r,
+Vector3f Renderer::traceRay(const Ray &r,
     float tmin,
     int bounces,
-    Hit &h) const
-{
+    Hit &h) const {
     // The starter code only implements basic drawing of sphere primitives.
     // You will implement phong shading, recursive ray tracing, and shadow rays.
 

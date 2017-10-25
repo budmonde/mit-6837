@@ -6,18 +6,15 @@
 
 #include <string>
 
-class Object3D
-{
+class Object3D {
 public:
-    Object3D()
-    {
+    Object3D() {
         material = NULL;
     }
 
     virtual ~Object3D() {}
 
-    Object3D(Material *material)
-    {
+    Object3D(Material *material) {
         this->material = material;
     }
 
@@ -35,8 +32,7 @@ public:
 };
 
 
-class Sphere : public Object3D
-{
+class Sphere : public Object3D {
 public:
     // default contstructor: unit ball at origin
     Sphere() {
@@ -49,8 +45,7 @@ public:
         Material *material) :
         Object3D(material),
         _center(center),
-        _radius(radius)
-    {
+        _radius(radius) {
     }
 
     virtual bool intersect(const Ray &r, float tmin, Hit &h) const override;
@@ -60,8 +55,7 @@ private:
     float    _radius;
 };
 
-class Group : public Object3D
-{
+class Group : public Object3D {
 public:
     // Return true if intersection found
     virtual bool intersect(const Ray &r, float tmin, Hit &h) const override;
@@ -77,8 +71,7 @@ private:
 
 // TODO: Implement Plane representing an infinite plane
 // Choose your representation, add more fields and fill in the functions
-class Plane : public Object3D
-{
+class Plane : public Object3D {
 public:
     Plane(const Vector3f &normal, float d, Material *m);
 
@@ -92,8 +85,7 @@ private:
 // TODO: implement this class.
 // Add more fields as necessary, but do not remove getVertex and getNormal
 // as they are currently called by the Octree for optimization
-class Triangle : public Object3D
-{
+class Triangle : public Object3D {
 public:
     Triangle(const Vector3f &a,
         const Vector3f &b,
@@ -102,8 +94,7 @@ public:
         const Vector3f &nb,
         const Vector3f &nc,
         Material *m) :
-        Object3D(m)
-    {
+        Object3D(m) {
         _v[0] = a;
         _v[1] = b;
         _v[2] = c;
@@ -133,8 +124,7 @@ private:
 // TODO implement this class
 // So that the intersect function first transforms the ray
 // Add more fields as necessary
-class Transform : public Object3D
-{
+class Transform : public Object3D {
 public:
     Transform(const Matrix4f &m, Object3D *obj);
 

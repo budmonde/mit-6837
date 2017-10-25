@@ -6,8 +6,7 @@
 #include <cstdlib>
 #include <iostream>
 
-ArgParser::ArgParser(int argc, const char *argv[]) 
-{
+ArgParser::ArgParser(int argc, const char *argv[]) {
     defaultValues();
 
     for (int i = 1; i < argc; i++) {
@@ -68,9 +67,7 @@ ArgParser::ArgParser(int argc, const char *argv[])
     std::cout << "- shadows: " << shadows << std::endl;
 }
 
-void
-ArgParser::defaultValues() 
-{
+void ArgParser::defaultValues() {
     // rendering output
     input_file = "";
     output_file = "";

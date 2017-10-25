@@ -10,9 +10,8 @@
 
 #include <string>
 
-class Material
-{
-  public:
+class Material {
+public:
     Material(const Vector3f &diffuseColor, 
              const Vector3f &specularColor = Vector3f::ZERO, 
              float shininess = 0) :

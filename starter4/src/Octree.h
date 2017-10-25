@@ -3,8 +3,7 @@
 
 class Mesh;
 
-struct Box
-{
+struct Box {
     Vector3f mn, mx;
 
     Box() {}
@@ -21,8 +20,7 @@ struct Box
     {}
 };
 
-struct OctNode
-{
+struct OctNode {
     OctNode *child[8];
 
     OctNode() {
@@ -44,9 +42,8 @@ struct OctNode
     std::vector<int> obj;
 };
 
-class Octree
-{
-  public:
+class Octree {
+public:
     Octree(int level = 8) :
         maxLevel(level)
     {
@@ -56,7 +53,7 @@ class Octree
 
     bool intersect(const Ray &ray);
 
-  private:
+private:
     void buildNode(OctNode *parent, 
                    const Box &pbox,
                    const std::vector<int> &trigs, 

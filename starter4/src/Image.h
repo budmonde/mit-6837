@@ -8,14 +8,12 @@
 #include "vecmath.h"
 
 // Simple image class
-class Image
-{
+class Image {
 public:
     Image() : _width(0), _height(0) {}
     // Instantiate an image of given width and height
     // All pixels are set to black (0, 0, 0) by default.
-    Image(int w, int h)
-    {
+    Image(int w, int h) {
         _width = w;
         _height = h;
         _data.resize(_width * _height);

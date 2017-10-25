@@ -15,9 +15,8 @@
 
 #define MAX_PARSER_TOKEN_LENGTH 100
 
-class SceneParser
-{
-  public:
+class SceneParser {
+public:
     SceneParser(const std::string &filename);
     ~SceneParser();
 
@@ -60,7 +59,7 @@ class SceneParser
     }
 
    std::vector<Light*> lights;
-  private:
+private:
     void parseFile();
     void parsePerspectiveCamera();
     void parseBackground();

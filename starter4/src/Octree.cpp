@@ -6,9 +6,7 @@
 #include <vector>
 
 ///@brief two intervals intersect
-bool
-intersect(float *a, float *b)
-{
+bool intersect(float *a, float *b) {
     if (a[0] > b[1]) {
         return a[0] <= b[1];
     } else {
@@ -17,9 +15,7 @@ intersect(float *a, float *b)
 }
 
 ///@brief two boxes intersect
-bool
-boxOverlap(Box *a, Box *b)
-{
+bool boxOverlap(Box *a, Box *b) {
     for (int dim = 0; dim < 3; dim++) {
         float ia[2] = { a->mn[dim], a->mx[dim] };
         float ib[2] = { b->mn[dim], b->mx[dim] };
@@ -31,9 +27,7 @@ boxOverlap(Box *a, Box *b)
     return true;
 }
 
-bool
-inside(const Box &a, const Box &b)
-{
+bool inside(const Box &a, const Box &b) {
     for (int dim = 0; dim < 3; dim++) {
         if (a.mn[dim] < b.mn[dim] || a.mx[dim] > b.mx[dim]) {
             return false;
@@ -43,9 +37,7 @@ inside(const Box &a, const Box &b)
 }
 
 ///@brief bounding box for a triangle
-Box
-trigBox(int t, const Mesh &m)
-{
+Box trigBox(int t, const Mesh &m) {
     const auto &tri = m.getTriangles();
 
     Box b;
@@ -66,13 +58,11 @@ trigBox(int t, const Mesh &m)
 }
 
 ///@brief pbox parent's box
-void
-Octree::buildNode(OctNode *parent,
+void Octree::buildNode(OctNode *parent,
                   const Box &pbox,
                   const std::vector<int> &trigs,
                   const Mesh &m,
-                  int level)
-{
+                  int level) {
     if (trigs.size() <= Octree::max_trig || level > maxLevel) {
         parent->obj = trigs;
         return;
@@ -112,9 +102,7 @@ Octree::buildNode(OctNode *parent,
     }
 }
 
-void
-Octree::build(Mesh *m)
-{
+void Octree::build(Mesh *m) {
     mesh = m;
 
     const auto &tri = mesh->getTriangles();
@@ -145,10 +133,8 @@ Octree::build(Mesh *m)
     buildNode(&root, box, trigs, *mesh, 0);
 }
 
-int
-first_node(float tx0, float ty0, float tz0, 
-           float txm, float tym, float tzm)
-{
+int first_node(float tx0, float ty0, float tz0, 
+           float txm, float tym, float tzm) {
     int bits = 0;
     ///find max x0 y0 z0
     if (tx0 > ty0) {
@@ -181,11 +167,9 @@ first_node(float tx0, float ty0, float tz0,
     return bits;
 }
 
-int
-new_node(float txm, int x, 
+int new_node(float txm, int x, 
          float tym, int y, 
-         float tzm, int z)
-{
+         float tzm, int z) {
     if (txm < tym) {
         if (txm < tzm) {
             return x;
@@ -198,16 +182,14 @@ new_node(float txm, int x,
     return z;
 }
 
-bool
-Octree::proc_subtree(float tx0, 
+bool Octree::proc_subtree(float tx0, 
                      float ty0, 
                      float tz0, 
                      float tx1, 
                      float ty1, 
                      float tz1, 
                      OctNode *node,
-                     const Ray &ray)
-{
+                     const Ray &ray) {
     bool intersected = false;
 
     if (tx1 < 0 || ty1 < 0 || tz1 < 0) {
@@ -275,9 +257,7 @@ Octree::proc_subtree(float tx0,
     return intersected;
 }
 
-bool
-Octree::intersect(const Ray &ray)
-{
+bool Octree::intersect(const Ray &ray) {
     Vector3f rd = ray.getDirection();
 
     //assumes rd normalized

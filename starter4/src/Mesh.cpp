@@ -8,8 +8,7 @@
 #include <sstream>
 
 Mesh::Mesh(const std::string &filename, Material *material) :
-    Object3D(material)
-{
+    Object3D(material) {
     std::ifstream f;
     f.open(filename.c_str());
     if (!f.is_open()) {
@@ -109,9 +108,7 @@ Mesh::Mesh(const std::string &filename, Material *material) :
     octree.build(this);
 }
 
-bool
-Mesh::intersect(const Ray &r, float tmin, Hit &h) const
-{
+bool Mesh::intersect(const Ray &r, float tmin, Hit &h) const {
 #if 1
     ray = &r;
     hit = &h;
@@ -128,9 +125,7 @@ Mesh::intersect(const Ray &r, float tmin, Hit &h) const
 #endif
 }
 
-bool
-Mesh::intersectTrig(int idx, const Ray &r) const
-{
+bool Mesh::intersectTrig(int idx, const Ray &r) const {
     const Triangle &triangle = _triangles[idx];
     bool result = triangle.intersect(r, tm, *hit);
     return result;
