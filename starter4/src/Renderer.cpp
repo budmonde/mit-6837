@@ -70,20 +70,45 @@ Vector3f Renderer::traceRay(const Ray &r,
     Hit &h) const {
     // The starter code only implements basic drawing of sphere primitives.
     // You will implement phong shading, recursive ray tracing, and shadow rays.
-    Vector3f out(0.f, 0.f, 0.f);
     if (_scene.getGroup()->intersect(r, tmin, h)) {
+        Vector3f out(0.f, 0.f, 0.f);
+        // Add Ambient Light
+        out += _scene.getAmbientLight() * h.getMaterial()->getDiffuseColor();
+        // Add Direct Diffuse and Specular Light
         Vector3f p = r.pointAtParameter(h.getT());
         int numLights = _scene.getNumLights();
         for (int i=0; i < numLights; ++i) {
             Light * l = _scene.getLight(i);
+            // calculate illumination by light source
             Vector3f tolight,
                      intensity;
             float distToLight;
             l->getIllumination(p, tolight, intensity, distToLight);
+            if (_args.shadows) {
+                // check for obstructions before reaching light
+                float epsilon = 1e-2;
+                Vector3f origin = p+tolight.normalized()*epsilon;
+                Ray shdR(origin, tolight);
+                Hit shdH;
+                if (_scene.getGroup()->intersect(shdR, epsilon, shdH)) {
+                    Vector3f distVec = shdR.pointAtParameter(shdH.getT()) - p;
+                    if (distVec.abs() < distToLight)
+                        continue;
+                }
+            }
             out += h.getMaterial()->shade(r,h,tolight,intensity);
         }
-        out += _scene.getAmbientLight() * h.getMaterial()->getDiffuseColor();
+        // Add Indirect Light
+        if (bounces > 0) {
+            float epsilon = 1e-2;
+            Vector3f dir = r.getDirection() - h.getNormal() * 2 * Vector3f::dot(r.getDirection(), h.getNormal());
+            Vector3f origin = p+dir.normalized()*epsilon;
+            Ray rflR(origin, dir);
+            Hit rflH;
+            out += h.getMaterial()->getSpecularColor() * traceRay(rflR, 0.f, bounces-1, rflH);
+        }
+        return out;
     }
-    return out;
+    return _scene.getBackgroundColor(r.getDirection());
 }
 

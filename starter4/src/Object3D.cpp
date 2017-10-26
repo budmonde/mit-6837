@@ -77,23 +77,64 @@ bool Group::intersect(const Ray &r, float tmin, Hit &h) const {
 
 
 Plane::Plane(const Vector3f &normal, float d, Material *m) : Object3D(m) {
-    // TODO implement Plane constructor
+    _normal = normal.normalized();
+    _d = d;
 }
 bool Plane::intersect(const Ray &r, float tmin, Hit &h) const {
-    // TODO implement
+    float cosAngle = Vector3f::dot(_normal, r.getDirection());
+    // does not intersect
+    if (cosAngle == 0.f) {
+        return false;
+    }
+    float t = (_d - Vector3f::dot(_normal, r.getOrigin())) / cosAngle;
+    // intersection behind camera
+    if (t < tmin) {
+        return false;
+    }
+    if (t < h.getT()) {
+        h.set(t, this->material, _normal);
+        return true;
+    }
     return false;
 }
 bool Triangle::intersect(const Ray &r, float tmin, Hit &h) const {
-    // TODO implement
+    // Solving the linear equation Ax = b
+    Matrix3f A(_v[0] - _v[1], _v[0] - _v[2], r.getDirection());
+    // x.x() = \beta, x.y() = \gamma, x.z() = t
+    Vector3f x = A.inverse() * (_v[0] - r.getOrigin());
+    // does not intersect
+    if (x.x() < 0.f || x.y() < 0.f || x.x() + x.y() > 1.f) {
+        return false;
+    }
+    // intersection behind camera
+    if (x.z() < tmin) {
+        return false;
+    }
+    if (x.z() < h.getT()) {
+        Vector3f normal = _normals[0] * (1 - x.x() - x.y()) + _normals[1] * x.x() + _normals[2] * x.y();
+        h.set(x.z(), this->material, normal.normalized());
+        return true;
+    }
     return false;
 }
 
 
 Transform::Transform(const Matrix4f &m,
-    Object3D *obj) : _object(obj) {
-    // TODO implement Transform constructor
+    Object3D *obj) : _object(obj), _m(m) {
 }
 bool Transform::intersect(const Ray &r, float tmin, Hit &h) const {
-    // TODO implement
+    const Vector3f &originWS = r.getOrigin(); //Ray origin in the world coordinate
+    const Vector3f &dirWS = r.getDirection();
+
+    Vector4f originOS = _m.inverse() * Vector4f(originWS, 1.f);
+    Vector4f dirOS = _m.inverse() * Vector4f(dirWS, 0.f);
+
+    Ray rayOS(originOS.xyz(), dirOS.xyz());
+    Hit hitOS;
+    if (_object->intersect(rayOS, tmin, hitOS) && hitOS.getT() < h.getT()) {
+        Vector3f nWS = _m.getSubmatrix3x3(0,0).inverse().transposed() * hitOS.getNormal();
+        h.set(hitOS.getT(), _object->material, nWS.normalized());
+        return true;
+    }
     return false;
 }
