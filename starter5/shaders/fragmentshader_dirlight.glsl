@@ -15,6 +15,10 @@ uniform vec3 specColor;
 uniform vec3 ambientColor;
 uniform float shininess;
 uniform float alpha;
+uniform sampler2D diffuseTex;
+uniform sampler2D shadowTex;
+
+uniform mat4 light_VP;
 
 // TODO add more uniforms
 
@@ -52,6 +56,12 @@ void main () {
 	// TODO implement texture mapping here
 	// TODO implement shadow mapping here
 
-    vec3 kd = diffColor;
+    vec4 x_ndc = light_VP * vec4(var_Position, 1);
+    vec3 x_tex = (x_ndc.xyz + vec3(1,1,1)) / 2;
+    float occluded_depth = texture(shadowTex, x_tex.xy).x + 0.01;
+    vec3 kd = texture(diffuseTex, var_Color.xy).xyz;
+    if (occluded_depth < x_tex.z)
+        kd *= 0.7;
+
     out_Color = vec4(ambientColor + blinn_phong(kd).xyz, 1);
 }
