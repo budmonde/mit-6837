@@ -1,0 +1,6 @@
+- Regular CMake should work.
+- Asked a couple of clarifications from Danny Tang
+- None
+- None I can point out
+- No
+- It was very interesting and gets you to actually do the small nitty gritty details you should probably know anyway. Great way to get you to familiarize with what happens under the hood. From what I observed with people who weren't as comfortable with this assignment is that if they didn't understand the math that made this work, they'd get suuper overwhelmed.
